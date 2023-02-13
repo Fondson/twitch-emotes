@@ -20,6 +20,7 @@
     "@types/node": "18.13.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.10",
+    "ackee-tracker": "^5.1.0",
     "cheerio": "^1.0.0-rc.12",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
@@ -30,6 +31,7 @@
     "typescript": "4.9.5"
   },
   "devDependencies": {
+    "@types/ackee-tracker": "^5.0.2",
     "@types/cheerio": "^0.22.31",
     "eslint-config-prettier": "^8.6.0",
     "husky": "^8.0.3",

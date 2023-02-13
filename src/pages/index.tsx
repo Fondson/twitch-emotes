@@ -68,7 +68,7 @@ export default function Home(props: HomeProps) {
   return (
     <>
       <Head>
-        <title>Twitch Emote</title>
+        <title>Twitch Emotes Finder</title>
         <meta name="description" content="What was that Twitch emote called again?" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

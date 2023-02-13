@@ -499,6 +499,11 @@
   resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-2.3.0.tgz#7de40af399376e3bdf320710f5d2fc0cdbb5d34b"
   integrity sha512-zYSgqYodvuuJPNl+Z5UaAP1adzONtCS923aKp7k6SuchrNOc8HE45epzI3ED0X2glYmFkd0Y/YXqPDhYi2p3Fw==
 
+"@types/ackee-tracker@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@types/ackee-tracker/-/ackee-tracker-5.0.2.tgz#f8440a4257431ab111ce10caa9394b8fc72e111a"
+  integrity sha512-0ieQOQmXlud6ez+USJLLdiXlo1if+vetB5ep0YpiE2IY+AzuEZe50ohbSNZq2VbbwG9ZBW2GhKShKEczRkmHuw==
+
 "@types/cheerio@^0.22.31":
   version "0.22.31"
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.31.tgz#b8538100653d6bb1b08a1e46dec75b4f2a5d5eb6"
@@ -590,6 +595,13 @@
   dependencies:
     "@typescript-eslint/types" "5.51.0"
     eslint-visitor-keys "^3.3.0"
+
+ackee-tracker@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/ackee-tracker/-/ackee-tracker-5.1.0.tgz#6c41ea5357973347c7c67a26009053bcc0345def"
+  integrity sha512-A7iKkGyUnEXuOzxultQB7hnm4bStYCo1c38MYRRihBfqUP8AImhtZOODb00t9xrXs/BTsg06bz1MKpXeMs9sYw==
+  dependencies:
+    platform "^1.3.6"
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -2571,6 +2583,11 @@ pidtree@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/pidtree/-/pidtree-0.6.0.tgz#90ad7b6d42d5841e69e0a2419ef38f8883aa057c"
   integrity sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==
+
+platform@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/platform/-/platform-1.3.6.tgz#48b4ce983164b209c2d45a107adb31f473a6e7a7"
+  integrity sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==
 
 postcss@8.4.14:
   version "8.4.14"
