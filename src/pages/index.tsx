@@ -233,14 +233,14 @@ export default function Home(props: HomeProps) {
               </Box>
 
               <Box sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
-                <Accordion>
+                <Accordion multiple>
                   <Accordion.Item value="motivation">
                     <Accordion.Control>
                       <Title order={2}>{'Need some motivation?'}</Title>
                     </Accordion.Control>
                     <Accordion.Panel>
                       <Text sx={(theme) => ({ marginBottom: `${theme.spacing.sm}px` })}>
-                        {'Figure out the names of these emotes'}
+                        {'Try figuring out the names of these emotes!'}
                       </Text>
                       <Box
                         sx={(theme) => ({
@@ -282,6 +282,20 @@ export default function Home(props: HomeProps) {
                           },
                         )}
                       </Box>
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                  <Accordion.Item value="cant-find-emote">
+                    <Accordion.Control>
+                      <Title order={2}>{"Why can't I find the emote I'm looking for?"}</Title>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                      <Text sx={(theme) => ({ marginBottom: `${theme.spacing.sm}px` })}>
+                        <Box component="span">{'Right now, this site can only find '}</Box>
+                        <a href="https://twitchemotes.com/" target="_blank" rel="noreferrer">
+                          global Twitch emotes
+                        </a>
+                        <Box component="span">{'.'}</Box>
+                      </Text>
                     </Accordion.Panel>
                   </Accordion.Item>
                 </Accordion>
