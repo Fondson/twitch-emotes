@@ -140,7 +140,7 @@ export default function Home(props: HomeProps) {
                 ) : preds ? (
                   <>
                     <Title order={2} sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
-                      {'Were you thinking of these emotes?'}
+                      {'Were you thinking of one of these emotes?'}
                     </Title>
                     <Box
                       sx={(theme) => ({
