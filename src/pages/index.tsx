@@ -109,7 +109,11 @@ export default function Home(props: HomeProps) {
                   isClassifyLoading ? (
                     <Loader size="xs" />
                   ) : (
-                    <ActionIcon onClick={() => classifyEmoteWithText(emoteDescription)} size="xs">
+                    <ActionIcon
+                      onClick={() => classifyEmoteWithText(emoteDescription)}
+                      size="xs"
+                      variant="transparent"
+                    >
                       <IconSend />
                     </ActionIcon>
                   )
