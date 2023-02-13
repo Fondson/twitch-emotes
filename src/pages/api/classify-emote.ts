@@ -12,9 +12,12 @@ export default async function handler(req: ClassifyEmoteRequest, res: ClassifyEm
   const { text } = req.query
 
   try {
-    const response = await fetch(config.classifyUrl, {
+    const response = await fetch(config.server.classifyUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        cookie: `access-token=${config.server.classifyUrlToken};`,
+      },
       body: JSON.stringify({
         data: [text],
       }),
