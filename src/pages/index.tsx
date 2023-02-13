@@ -1,4 +1,5 @@
 import {
+  Accordion,
   ActionIcon,
   Alert,
   Box,
@@ -9,6 +10,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core'
+import { useScrollIntoView } from '@mantine/hooks'
 import { IconAlertCircle, IconArrowRight, IconBrandGithub, IconSend } from '@tabler/icons-react'
 import * as cheerio from 'cheerio'
 import { GetStaticProps } from 'next'
@@ -25,6 +27,11 @@ type HomeProps = {
 
 export default function Home(props: HomeProps) {
   const { emotesInfo } = props
+
+  const { scrollIntoView: scrollResultIntoView, targetRef: resultRef } =
+    useScrollIntoView<HTMLDivElement>()
+  const { scrollIntoView: scrollTextInputIntoView, targetRef: textInputHeadingRef } =
+    useScrollIntoView<HTMLHeadingElement>()
 
   const [prevEmoteDescription, setPrevEmoteDescription] = useState<string>()
   const [emoteDescription, setEmoteDescription] = useState('')
@@ -58,6 +65,7 @@ export default function Home(props: HomeProps) {
       setPreds(data.data)
       setPrevEmoteDescription(emoteDescription)
       setEmoteDescription('')
+      scrollResultIntoView()
     } catch {
       setClassifyError(true)
     }
@@ -91,7 +99,9 @@ export default function Home(props: HomeProps) {
                 margin: `${theme.spacing.sm}px 0`,
               })}
             >
-              <Title order={1}>{'What does your emote look like?'}</Title>
+              <Title ref={textInputHeadingRef} order={1}>
+                {'What does your emote look like?'}
+              </Title>
               <Text>{'Find a Twitch emote that matches your description'}</Text>
               <TextInput
                 placeholder={
@@ -120,151 +130,167 @@ export default function Home(props: HomeProps) {
                 }
               />
 
-              <Box sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
-                <Title order={2}>{'Need some motivation?'}</Title>
-                <Text sx={(theme) => ({ marginBottom: `${theme.spacing.sm}px` })}>
-                  {'Figure out the names of these emotes'}
-                </Text>
-                <Box
-                  sx={(theme) => ({
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: theme.spacing.sm,
-                  })}
-                >
-                  {['PunOko', 'Kappa', 'KomodoHype', 'Jebaited', 'NotLikeThis'].map((label) => {
-                    return (
-                      <Paper
-                        key={label}
-                        sx={(theme) => ({
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          border: `1px solid ${theme.colors.dark[6]}`,
-                          borderRadius: theme.radius.lg,
-                          backgroundColor: theme.colors.dark[8],
-                          width: '146px',
-                          padding: theme.spacing.md,
-                        })}
-                      >
-                        <Box
-                          sx={(theme) => ({
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '112px',
-                            height: '112px',
-                          })}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={emotesInfo[label].imageLink} alt={`${label}`} />
-                        </Box>
-                      </Paper>
-                    )
-                  })}
-                </Box>
-              </Box>
-              {classifyError ? (
-                <Alert
-                  title="Error 😔"
-                  color="red"
-                  icon={<IconAlertCircle size={16} />}
-                  sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}
-                >
-                  {
-                    'This site runs on free resources. There might be trouble handling the current load'
-                  }
-                </Alert>
-              ) : preds ? (
-                <>
-                  <Title order={2} sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
-                    {'Were you thinking of these emotes?'}
-                  </Title>
-                  <Box
-                    sx={(theme) => ({
-                      flexGrow: 1,
-                      flexWrap: 'wrap',
-                      display: 'flex',
-                      gap: theme.spacing.sm,
-                      overflowY: 'auto',
-                    })}
+              <Box ref={resultRef}>
+                {classifyError ? (
+                  <Alert
+                    title="Error 😔"
+                    color="red"
+                    icon={<IconAlertCircle size={16} />}
+                    sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}
                   >
-                    {preds.map(({ label }) => {
-                      if (emotesInfo[label]?.imageLink == null) {
-                        return null
-                      }
+                    {
+                      'This site runs on free resources. There might be trouble handling the current load'
+                    }
+                  </Alert>
+                ) : preds ? (
+                  <>
+                    <Title order={2} sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
+                      {'Were you thinking of these emotes?'}
+                    </Title>
+                    <Box
+                      sx={(theme) => ({
+                        flexGrow: 1,
+                        flexWrap: 'wrap',
+                        display: 'flex',
+                        gap: theme.spacing.sm,
+                        overflowY: 'auto',
+                      })}
+                    >
+                      {preds.map(({ label }) => {
+                        if (emotesInfo[label]?.imageLink == null) {
+                          return null
+                        }
 
-                      return (
-                        <Paper
-                          key={label}
-                          component="a"
-                          target="_blank"
-                          href={emotesInfo[label].link}
-                          sx={(theme) => ({
-                            display: 'flex',
-                            flexDirection: 'column',
-                            border: `1px solid ${theme.colors.dark[6]}`,
-                            borderRadius: theme.radius.lg,
-                            backgroundColor: theme.colors.dark[8],
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '146px',
-                            padding: theme.spacing.md,
-                          })}
-                        >
-                          <Box
+                        return (
+                          <Paper
+                            key={label}
+                            component="a"
+                            target="_blank"
+                            href={emotesInfo[label].link}
                             sx={(theme) => ({
                               display: 'flex',
+                              flexDirection: 'column',
+                              border: `1px solid ${theme.colors.dark[6]}`,
+                              borderRadius: theme.radius.lg,
+                              backgroundColor: theme.colors.dark[8],
                               alignItems: 'center',
                               justifyContent: 'center',
-                              width: '112px',
-                              height: '112px',
-                              marginBottom: theme.spacing.xs,
+                              width: '146px',
+                              padding: theme.spacing.md,
                             })}
                           >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={emotesInfo[label].imageLink} alt={`${label}`} />
-                          </Box>
-                          <Text
-                            truncate
-                            align="center"
-                            sx={() => ({ width: '100%' })}
-                            title={label}
-                          >
-                            {label}
-                          </Text>
-                        </Paper>
-                      )
-                    })}
-                  </Box>
-                </>
-              ) : (
-                <>
-                  <Title order={2} sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
-                    {'Examples'}
-                  </Title>
-                  <Box
-                    sx={(theme) => ({
-                      flexWrap: 'wrap',
-                      display: 'flex',
-                      gap: theme.spacing.sm,
-                    })}
-                  >
-                    {["turkey with man's face", 'anime girl waving hi', 'crying pink blob'].map(
-                      (example) => {
-                        return (
-                          <Button
-                            key={example}
-                            color="dark"
-                            rightIcon={<IconArrowRight size={16} />}
-                            onClick={() => setEmoteDescription(example)}
-                          >{`"${example}"`}</Button>
+                            <Box
+                              sx={(theme) => ({
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '112px',
+                                height: '112px',
+                                marginBottom: theme.spacing.xs,
+                              })}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={emotesInfo[label].imageLink} alt={`${label}`} />
+                            </Box>
+                            <Text
+                              truncate
+                              align="center"
+                              sx={() => ({ width: '100%' })}
+                              title={label}
+                            >
+                              {label}
+                            </Text>
+                          </Paper>
                         )
-                      },
-                    )}
-                  </Box>
-                </>
-              )}
+                      })}
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <Title order={2} sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
+                      {'Examples'}
+                    </Title>
+                    <Box
+                      sx={(theme) => ({
+                        flexWrap: 'wrap',
+                        display: 'flex',
+                        gap: theme.spacing.sm,
+                      })}
+                    >
+                      {["turkey with man's face", 'anime girl waving hi', 'crying pink blob'].map(
+                        (example) => {
+                          return (
+                            <Button
+                              key={example}
+                              color="dark"
+                              rightIcon={<IconArrowRight size={16} />}
+                              onClick={() => {
+                                setEmoteDescription(example)
+                                scrollTextInputIntoView()
+                              }}
+                            >{`"${example}"`}</Button>
+                          )
+                        },
+                      )}
+                    </Box>
+                  </>
+                )}
+              </Box>
+
+              <Box sx={(theme) => ({ margin: `${theme.spacing.sm}px 0` })}>
+                <Accordion>
+                  <Accordion.Item value="motivation">
+                    <Accordion.Control>
+                      <Title order={2}>{'Need some motivation?'}</Title>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                      <Text sx={(theme) => ({ marginBottom: `${theme.spacing.sm}px` })}>
+                        {'Figure out the names of these emotes'}
+                      </Text>
+                      <Box
+                        sx={(theme) => ({
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: theme.spacing.sm,
+                        })}
+                      >
+                        {['PunOko', 'Kappa', 'KomodoHype', 'Jebaited', 'NotLikeThis'].map(
+                          (label) => {
+                            return (
+                              <Paper
+                                key={label}
+                                sx={(theme) => ({
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  border: `1px solid ${theme.colors.dark[6]}`,
+                                  borderRadius: theme.radius.lg,
+                                  backgroundColor: theme.colors.dark[8],
+                                  width: '146px',
+                                  padding: theme.spacing.md,
+                                })}
+                              >
+                                <Box
+                                  sx={(theme) => ({
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '112px',
+                                    height: '112px',
+                                  })}
+                                >
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={emotesInfo[label].imageLink} alt={`${label}`} />
+                                </Box>
+                              </Paper>
+                            )
+                          },
+                        )}
+                      </Box>
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                </Accordion>
+              </Box>
             </Box>
           </Box>
         </Box>
