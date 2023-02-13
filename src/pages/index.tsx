@@ -104,9 +104,7 @@ export default function Home(props: HomeProps) {
               </Title>
               <Text>{'Find a Twitch emote that matches your description'}</Text>
               <TextInput
-                placeholder={
-                  prevEmoteDescription ?? "Emote description (e.x., turkey with man's face)"
-                }
+                placeholder={prevEmoteDescription ?? 'Emote description'}
                 value={emoteDescription}
                 onChange={(event) => setEmoteDescription(event.currentTarget.value)}
                 onKeyPress={(event) => {
