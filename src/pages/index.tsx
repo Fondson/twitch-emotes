@@ -28,8 +28,6 @@ type HomeProps = {
 export default function Home(props: HomeProps) {
   const { emotesInfo } = props
 
-  const { scrollIntoView: scrollResultIntoView, targetRef: resultRef } =
-    useScrollIntoView<HTMLDivElement>()
   const { scrollIntoView: scrollTextInputIntoView, targetRef: textInputHeadingRef } =
     useScrollIntoView<HTMLHeadingElement>()
 
@@ -65,7 +63,6 @@ export default function Home(props: HomeProps) {
       setPreds(data.data)
       setPrevEmoteDescription(emoteDescription)
       setEmoteDescription('')
-      scrollResultIntoView()
     } catch {
       setClassifyError(true)
     }
@@ -128,7 +125,7 @@ export default function Home(props: HomeProps) {
                 }
               />
 
-              <Box ref={resultRef}>
+              <Box>
                 {classifyError ? (
                   <Alert
                     title="Error 😔"
