@@ -8,8 +8,20 @@ interface ClassifyEmoteRequest extends NextApiRequest {
   query: ClassifyEmoteQuery
 }
 
+type EmoteSource = 'twitch-global' | 'bttv'
+
 type ClassifyEmoteReponseData = {
-  data: { label: string; confidence: number }[]
+  data: {
+    source: EmoteSource
+    emoteName: string
+    id: string
+    emotePageUrl: string
+    emoteImageUrl: string
+    user: {
+      displayName: string
+    }
+    confidence: number
+  }[]
 }
 
 type ClassifyEmoteResponse = NextApiResponse<ClassifyEmoteReponseData>
@@ -19,4 +31,5 @@ export type {
   ClassifyEmoteReponseData,
   ClassifyEmoteRequest,
   ClassifyEmoteResponse,
+  EmoteSource,
 }

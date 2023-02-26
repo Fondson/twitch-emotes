@@ -12,22 +12,12 @@ import {
 } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { IconAlertCircle, IconArrowRight, IconBrandGithub, IconSend } from '@tabler/icons-react'
-import * as cheerio from 'cheerio'
-import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 
 import { ClassifyEmoteQuery, ClassifyEmoteReponseData } from '~/types/api/classify-emote'
 
-type EmotesInfo = Record<string, { imageLink: string; link: string }>
-
-type HomeProps = {
-  emotesInfo: EmotesInfo
-}
-
-export default function Home(props: HomeProps) {
-  const { emotesInfo } = props
-
+export default function Home() {
   const { scrollIntoView: scrollTextInputIntoView, targetRef: textInputHeadingRef } =
     useScrollIntoView<HTMLHeadingElement>()
 
@@ -40,7 +30,6 @@ export default function Home(props: HomeProps) {
   const classifyEmoteWithText = async (text: string) => {
     if (isClassifyLoading || !text) return
 
-    setClassifyError(false)
     setIsClassifyLoading(true)
 
     try {
@@ -61,8 +50,9 @@ export default function Home(props: HomeProps) {
       const data: ClassifyEmoteReponseData = await response.json()
 
       setPreds(data.data)
-      setPrevEmoteDescription(emoteDescription)
+      setPrevEmoteDescription(text)
       setEmoteDescription('')
+      setClassifyError(false)
     } catch {
       setClassifyError(true)
     }
@@ -110,19 +100,21 @@ export default function Home(props: HomeProps) {
                   }
                 }}
                 sx={(theme) => ({ margin: `${theme.spacing.sm}px 0px` })}
+                size="lg"
                 rightSection={
                   isClassifyLoading ? (
-                    <Loader size="xs" />
+                    <Loader size="sm" />
                   ) : (
                     <ActionIcon
                       onClick={() => classifyEmoteWithText(emoteDescription)}
-                      size="xs"
+                      size="md"
                       variant="transparent"
                     >
                       <IconSend />
                     </ActionIcon>
                   )
                 }
+                rightSectionWidth="50px"
               />
 
               <Box>
@@ -151,25 +143,19 @@ export default function Home(props: HomeProps) {
                         overflowY: 'auto',
                       })}
                     >
-                      {preds.map(({ label }) => {
-                        if (emotesInfo[label]?.imageLink == null) {
-                          return null
-                        }
-
+                      {preds.map(({ emoteName, emotePageUrl, emoteImageUrl, user }) => {
                         return (
                           <Paper
-                            key={label}
+                            key={emotePageUrl}
                             component="a"
                             target="_blank"
-                            href={emotesInfo[label].link}
+                            href={emotePageUrl}
                             sx={(theme) => ({
                               display: 'flex',
                               flexDirection: 'column',
                               border: `1px solid ${theme.colors.dark[6]}`,
                               borderRadius: theme.radius.lg,
                               backgroundColor: theme.colors.dark[8],
-                              alignItems: 'center',
-                              justifyContent: 'center',
                               width: '146px',
                               padding: theme.spacing.md,
                             })}
@@ -185,15 +171,29 @@ export default function Home(props: HomeProps) {
                               })}
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={emotesInfo[label].imageLink} alt={`${label}`} />
+                              <img
+                                src={emoteImageUrl}
+                                alt={emoteName}
+                                style={{ objectFit: 'scale-down', width: '100%', height: '100%' }}
+                              />
                             </Box>
                             <Text
-                              truncate
                               align="center"
-                              sx={() => ({ width: '100%' })}
-                              title={label}
+                              truncate
+                              sx={() => ({ width: '100%', lineHeight: 1.05 })}
+                              title={emoteName}
                             >
-                              {label}
+                              {emoteName}
+                            </Text>
+                            <Text
+                              align="center"
+                              size="sm"
+                              color="dimmed"
+                              truncate
+                              sx={() => ({ width: '100%' })}
+                              title={emoteName}
+                            >
+                              {user.displayName}
                             </Text>
                           </Paper>
                         )
@@ -212,21 +212,24 @@ export default function Home(props: HomeProps) {
                         gap: theme.spacing.sm,
                       })}
                     >
-                      {["turkey with man's face", 'anime girl waving hi', 'crying pink blob'].map(
-                        (example) => {
-                          return (
-                            <Button
-                              key={example}
-                              color="dark"
-                              rightIcon={<IconArrowRight size={16} />}
-                              onClick={() => {
-                                setEmoteDescription(example)
-                                scrollTextInputIntoView()
-                              }}
-                            >{`"${example}"`}</Button>
-                          )
-                        },
-                      )}
+                      {[
+                        'cartoon hamster dancing',
+                        "turkey with man's face",
+                        'green frog with credit card',
+                      ].map((example) => {
+                        return (
+                          <Button
+                            key={example}
+                            color="dark"
+                            rightIcon={<IconArrowRight size={16} />}
+                            onClick={() => {
+                              setEmoteDescription(example)
+                              classifyEmoteWithText(example)
+                              scrollTextInputIntoView()
+                            }}
+                          >{`"${example}"`}</Button>
+                        )
+                      })}
                     </Box>
                   </>
                 )}
@@ -249,38 +252,42 @@ export default function Home(props: HomeProps) {
                           gap: theme.spacing.sm,
                         })}
                       >
-                        {['PunOko', 'Kappa', 'KomodoHype', 'Jebaited', 'NotLikeThis'].map(
-                          (label) => {
-                            return (
-                              <Paper
-                                key={label}
+                        {[
+                          'https://static-cdn.jtvnw.net/emoticons/v2/160401/static/light/3.0',
+                          'https://cdn.betterttv.net/emote/5ba6d5ba6ee0c23989d52b10/3x.webp',
+                          'https://cdn.betterttv.net/emote/5e0fa9d40550d42106b8a489/3x.webp',
+                          'https://cdn.betterttv.net/emote/5e2914861df9195f1a4cd411/3x.webp',
+                          'https://cdn.betterttv.net/emote/58493695987aab42df852e0f/3x.webp',
+                        ].map((url, i) => {
+                          return (
+                            <Paper
+                              key={url}
+                              sx={(theme) => ({
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                border: `1px solid ${theme.colors.dark[6]}`,
+                                borderRadius: theme.radius.lg,
+                                backgroundColor: theme.colors.dark[8],
+                                width: '146px',
+                                padding: theme.spacing.md,
+                              })}
+                            >
+                              <Box
                                 sx={(theme) => ({
                                   display: 'flex',
-                                  justifyContent: 'center',
                                   alignItems: 'center',
-                                  border: `1px solid ${theme.colors.dark[6]}`,
-                                  borderRadius: theme.radius.lg,
-                                  backgroundColor: theme.colors.dark[8],
-                                  width: '146px',
-                                  padding: theme.spacing.md,
+                                  justifyContent: 'center',
+                                  width: '112px',
+                                  height: '112px',
                                 })}
                               >
-                                <Box
-                                  sx={(theme) => ({
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: '112px',
-                                    height: '112px',
-                                  })}
-                                >
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img src={emotesInfo[label].imageLink} alt={`${label}`} />
-                                </Box>
-                              </Paper>
-                            )
-                          },
-                        )}
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={url} alt={`Motivation ${i + 1}`} />
+                              </Box>
+                            </Paper>
+                          )
+                        })}
                       </Box>
                     </Accordion.Panel>
                   </Accordion.Item>
@@ -290,12 +297,25 @@ export default function Home(props: HomeProps) {
                     </Accordion.Control>
                     <Accordion.Panel>
                       <Text sx={(theme) => ({ marginBottom: `${theme.spacing.sm}px` })}>
-                        <Box component="span">{'Right now, this site can only find '}</Box>
+                        <Box component="span">
+                          {
+                            'This site finds Twitch emotes using a trained AI model. The model is only trained on '
+                          }
+                        </Box>
                         <a href="https://twitchemotes.com/" target="_blank" rel="noreferrer">
                           global Twitch emotes
                         </a>
+                        <Box component="span">{' and the '}</Box>
+                        <a
+                          href="https://betterttv.com/emotes/popular/"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          top 1000~ emotes from BetterTTV
+                        </a>
                         <Box component="span">{'.'}</Box>
                       </Text>
+                      <Text size="sm">The AI might just be too dumb to find a specific emote.</Text>
                     </Accordion.Panel>
                   </Accordion.Item>
                 </Accordion>
@@ -331,44 +351,4 @@ export default function Home(props: HomeProps) {
       </Box>
     </>
   )
-}
-
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const simpleUnescape = (htmlStr: string) => {
-    htmlStr = htmlStr.replace(/&lt;/g, '<')
-    htmlStr = htmlStr.replace(/&gt;/g, '>')
-    htmlStr = htmlStr.replace(/&quot;/g, '"')
-    htmlStr = htmlStr.replace(/&#39;/g, "'")
-    htmlStr = htmlStr.replace(/&amp;/g, '&')
-    return htmlStr
-  }
-
-  const res = await fetch('https://twitchemotes.com/')
-  const $ = cheerio.load(await res.text())
-  const emoteEls = $('.emote-name')
-    .toArray()
-    .sort((el1, el2) => {
-      const hrefParts1 = $(el1).attr('href')?.split('/')
-      const hrefParts2 = $(el2).attr('href')?.split('/')
-
-      return (
-        parseInt(hrefParts1?.[hrefParts1.length - 1] ?? '0', 10) -
-        parseInt(hrefParts2?.[hrefParts2.length - 1] ?? '0', 10)
-      )
-    })
-
-  const emotesInfo = emoteEls.reduce((prev, emoteEl) => {
-    const emoteElText = (emoteEl as cheerio.TagElement).nextSibling as cheerio.TagElement
-    return {
-      [simpleUnescape(emoteElText.nodeValue.trim())]: {
-        imageLink: $(emoteEl).children('img').attr('src')?.replace('1.0', '3.0') ?? '',
-        link: `https://twitchemotes.com${$(emoteEl).attr('href')}`,
-      },
-      ...prev,
-    }
-  }, {} as EmotesInfo)
-
-  return {
-    props: { emotesInfo },
-  }
 }
