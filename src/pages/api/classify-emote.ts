@@ -67,9 +67,18 @@ export default async function handler(req: ClassifyEmoteRequest, res: ClassifyEm
                 },
               })
               if (!bttvResponse.ok) {
-                throw new Error(`Received non-ok status from BTTV. ${JSON.stringify(response)}`)
+                // just mock some user info
+                console.error(
+                  `Received non-ok status from BTTV for ID ${id}. ${JSON.stringify(bttvResponse)}`,
+                )
+                bttvData = {
+                  user: {
+                    displayName: '-',
+                  },
+                }
+              } else {
+                bttvData = await bttvResponse.json()
               }
-              bttvData = await bttvResponse.json()
               bttvCache[id] = bttvData
             }
 
